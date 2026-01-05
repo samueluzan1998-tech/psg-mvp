@@ -65,7 +65,7 @@
     }
 
     status.textContent = "Aperçu généré ✅";
-    preview.src = data.previewUrl + "&t=" + Date.now();
+    preview.src = data.previewUrl + "?t=" + Date.now();
     preview.style.display = "block";
     unlock.style.display = "block";
   };

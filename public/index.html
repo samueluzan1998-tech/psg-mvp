@@ -373,7 +373,74 @@
     // init
     show("start");
   </script>
+<script>
+  const btnStart = document.getElementById("btnStart");
+  const btnBack1 = document.getElementById("btnBack1");
+
+  const screenStart = document.getElementById("screenStart");
+  const screenCapture = document.getElementById("screenCapture");
+
+  // Aller à l'écran Capture
+  btnStart.addEventListener("click", () => {
+    screenStart.classList.add("hidden");
+    screenCapture.classList.remove("hidden");
+  });
+
+  // Retour à l'écran d'accueil
+  btnBack1.addEventListener("click", () => {
+    screenCapture.classList.add("hidden");
+    screenStart.classList.remove("hidden");
+  });
+</script>
+
 </body>
 </html>
+<script>
+  const btnStart = document.getElementById("btnStart");
+  const btnBack1 = document.getElementById("btnBack1");
+  const screenStart = document.getElementById("screenStart");
+  const screenCapture = document.getElementById("screenCapture");
 
+  alert(
+    "btnStart=" + !!btnStart +
+    " btnBack1=" + !!btnBack1 +
+    " screenStart=" + !!screenStart +
+    " screenCapture=" + !!screenCapture
+  );
 
+  // Aller à l’écran Capture
+  btnStart.addEventListener("click", () => {
+    screenStart.classList.add("hidden");
+    screenCapture.classList.remove("hidden");
+  });
+
+  // Retour à l’écran d’accueil
+  btnBack1.addEventListener("click", () => {
+    screenCapture.classList.add("hidden");
+    screenStart.classList.remove("hidden");
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btnStart = document.getElementById("btnStart");
+  const btnBack1 = document.getElementById("btnBack1");
+
+  const screenStart = document.getElementById("screenStart");
+  const screenCapture = document.getElementById("screenCapture");
+
+  alert("JS OK");
+
+  btnStart.addEventListener("click", () => {
+    screenStart.classList.add("hidden");
+    screenCapture.classList.remove("hidden");
+  });
+
+  btnBack1.addEventListener("click", () => {
+    screenCapture.classList.add("hidden");
+    screenStart.classList.remove("hidden");
+  });
+
+});
+</script>

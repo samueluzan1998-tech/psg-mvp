@@ -125,7 +125,22 @@
 
         <div class="mt-4 rounded-3xl bg-zinc-950/55 border border-zinc-800 p-4">
           <div class="text-xs text-zinc-400">Caméra ou galerie</div>
-          <input id="photo" type="file" accept="image/*" capture="environment"
+<input id="photoCamera" type="file" accept="image/*" capture="environment" class="hidden" />
+<input id="photoFile" type="file" accept="image/*" class="hidden" />
+
+<div class="mt-3 grid grid-cols-2 gap-3">
+  <button id="btnCamera"
+    class="rounded-2xl py-4 font-extrabold bg-blue-500 text-white hover:bg-blue-400 active:scale-[0.99] transition">
+    📸 Prendre une photo
+  </button>
+
+  <button id="btnFile"
+    class="rounded-2xl py-4 font-extrabold bg-zinc-800 text-zinc-200 hover:bg-zinc-700 active:scale-[0.99] transition">
+    🖼️ Choisir un fichier
+  </button>
+</div>
+
+<div id="fileInfo" class="mt-3 text-[11px] text-zinc-500"></div>
             class="mt-2 block w-full text-sm
                    file:mr-4 file:rounded-xl file:border-0
                    file:bg-blue-500 file:px-4 file:py-3 file:font-bold file:text-white

@@ -23,8 +23,7 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-}
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir)if (!fs.existsSync(dir)) fs.mkdirSync(dir)}
 
 // Watermark dissuasif
 function watermarkSvg(width, height) {

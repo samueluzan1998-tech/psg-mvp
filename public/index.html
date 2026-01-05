@@ -3,123 +3,328 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Photo IA — MVP</title>
+  <title>Stadium Arcade — Photo</title>
 
-  <!-- Tailwind CSS (sans build) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* Petit “grain” premium + safe-area iPhone */
     body { padding-bottom: env(safe-area-inset-bottom); }
+    /* Petit “scan” arcade */
+    @keyframes scan {
+      0% { transform: translateY(-30%); opacity: 0; }
+      15% { opacity: 1; }
+      50% { opacity: 1; }
+      100% { transform: translateY(130%); opacity: 0; }
+    }
+    .scanline { animation: scan 1.6s linear infinite; }
+    /* Effet “glow” arcade */
+    .glow { box-shadow: 0 0 0.8rem rgba(255,214,0,0.25), 0 0 1.6rem rgba(0,71,255,0.18); }
   </style>
 </head>
 
-<body class="bg-zinc-950 text-zinc-50 min-h-screen">
-  <div class="max-w-md mx-auto px-4 py-6">
-    <!-- Header -->
+<body class="min-h-screen bg-zinc-950 text-white overflow-x-hidden">
+  <!-- Background -->
+  <div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,71,255,0.18),transparent_45%),radial-gradient(ellipse_at_bottom,rgba(255,45,45,0.16),transparent_45%)]"></div>
+    <div class="absolute inset-0 opacity-[0.18] bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/70 to-zinc-950"></div>
+  </div>
+
+  <div class="max-w-md mx-auto px-4 pt-6 pb-10">
+    <!-- Top bar -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-zinc-800 grid place-items-center text-lg">⚽️</div>
+        <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 grid place-items-center text-xl glow">🎮</div>
         <div>
-          <div class="text-lg font-semibold leading-tight">Photo IA</div>
-          <div class="text-xs text-zinc-400">Prototype matchday (démo)</div>
+          <div class="font-extrabold tracking-tight leading-tight">Stadium Arcade</div>
+          <div class="text-xs text-zinc-400">Activation photo — prototype</div>
         </div>
       </div>
-      <span class="text-xs px-3 py-1 rounded-full bg-zinc-800 text-zinc-200">Preview protégée</span>
+      <div class="text-[11px] px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-200">
+        <span class="text-yellow-300 font-bold">LIVE</span> • Preview protégée
+      </div>
     </div>
 
-    <!-- Hero -->
-    <div class="mt-6 rounded-3xl bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-800 p-5">
-      <h1 class="text-2xl font-bold">Ta photo “comme si” tu étais avec les joueurs</h1>
-      <p class="mt-2 text-sm text-zinc-300">
-        1) Choisis une photo  2) On génère un aperçu protégé  3) Paiement → HD (bientôt)
-      </p>
+    <!-- Progress -->
+    <div class="mt-5">
+      <div class="flex items-center justify-between text-[11px] text-zinc-400">
+        <span id="stepLabel">LEVEL 0</span>
+        <span id="hintLabel">Prêt à jouer</span>
+      </div>
+      <div class="mt-2 h-2 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden">
+        <div id="bar" class="h-full w-0 bg-gradient-to-r from-yellow-300 via-blue-500 to-red-500 transition-all duration-500"></div>
+      </div>
     </div>
 
-    <!-- Pack -->
-    <div class="mt-5 rounded-3xl border border-zinc-800 bg-zinc-900/40 p-5">
-      <div class="text-sm font-semibold">Choisis ton pack</div>
-      <p class="text-xs text-zinc-400 mt-1">Les prix sont indicatifs (simulation).</p>
+    <!-- Screen container -->
+    <div class="mt-5 space-y-4">
 
-      <select id="pack" class="mt-3 w-full rounded-2xl bg-zinc-950 border border-zinc-800 px-4 py-3 text-sm">
-        <option value="solo">Solo — 1 photo (5€)</option>
-        <option value="duo">Duo — 2 photos (8€)</option>
-        <option value="famille">Famille — 4 photos (12€)</option>
-        <option value="tribu">Tribu — 6 photos (15€)</option>
-      </select>
-
-      <div class="mt-4 grid grid-cols-2 gap-3 text-xs text-zinc-300">
-        <div class="rounded-2xl bg-zinc-950/70 border border-zinc-800 p-3">
-          ✅ Aperçu immédiat
-          <div class="text-zinc-500 mt-1">Watermark + compression</div>
+      <!-- SCREEN 0: START -->
+      <section id="screenStart" class="rounded-3xl border border-zinc-800 bg-zinc-900/35 p-5">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h1 class="text-2xl font-extrabold leading-tight">
+              Joue ta photo<br><span class="text-yellow-300">au stade</span>
+            </h1>
+            <p class="mt-2 text-sm text-zinc-300">
+              1) Capture • 2) Aperçu protégé • 3) Débloque la récompense
+            </p>
+          </div>
+          <div class="shrink-0 rounded-2xl bg-zinc-950/60 border border-zinc-800 px-3 py-2 text-[11px] text-zinc-300">
+            <div class="font-bold text-white">+ Bonus</div>
+            <div class="text-zinc-400">Packs famille</div>
+          </div>
         </div>
-        <div class="rounded-2xl bg-zinc-950/70 border border-zinc-800 p-3">
-          🔒 HD après achat
-          <div class="text-zinc-500 mt-1">Téléchargement + options</div>
+
+        <div class="mt-4 grid grid-cols-3 gap-3 text-[11px]">
+          <div class="rounded-2xl bg-zinc-950/60 border border-zinc-800 p-3">
+            <div class="font-bold text-white">⚡ Rapide</div>
+            <div class="text-zinc-400 mt-1">30 sec</div>
+          </div>
+          <div class="rounded-2xl bg-zinc-950/60 border border-zinc-800 p-3">
+            <div class="font-bold text-white">🔒 Protégé</div>
+            <div class="text-zinc-400 mt-1">Watermark</div>
+          </div>
+          <div class="rounded-2xl bg-zinc-950/60 border border-zinc-800 p-3">
+            <div class="font-bold text-white">🏆 Récompense</div>
+            <div class="text-zinc-400 mt-1">HD</div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Upload -->
-    <div class="mt-5 rounded-3xl border border-zinc-800 bg-zinc-900/40 p-5">
-      <div class="text-sm font-semibold">Ajoute ta photo</div>
-      <p class="text-xs text-zinc-400 mt-1">Caméra ou galerie (iPhone OK).</p>
+        <button id="btnStart"
+          class="mt-5 w-full rounded-2xl py-4 font-extrabold text-zinc-950 bg-yellow-300 hover:bg-yellow-200 active:scale-[0.99] transition glow">
+          🎮 COMMENCER LA PARTIE
+        </button>
 
-      <input id="photo" type="file" accept="image/*" capture="environment"
-        class="mt-3 block w-full text-sm
-               file:mr-4 file:rounded-xl file:border-0
-               file:bg-zinc-800 file:px-4 file:py-3 file:text-zinc-100
-               file:hover:bg-zinc-700" />
+        <div class="mt-3 text-[11px] text-zinc-500">
+          Astuce : si c’est lent au premier chargement, c’est normal (serveur qui se réveille).
+        </div>
+      </section>
 
-      <button id="sendBtn"
-        class="mt-4 w-full rounded-2xl bg-white text-zinc-950 font-semibold py-4 active:scale-[0.99] transition">
-        Générer mon aperçu
-      </button>
+      <!-- SCREEN 1: CAPTURE + PACK -->
+      <section id="screenCapture" class="hidden rounded-3xl border border-zinc-800 bg-zinc-900/35 p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-zinc-400 font-semibold">LEVEL 1</div>
+            <div class="text-xl font-extrabold">Capture ton moment 📸</div>
+          </div>
+          <button id="btnBack1" class="text-xs px-3 py-2 rounded-xl bg-zinc-950/60 border border-zinc-800 text-zinc-200">
+            ← Retour
+          </button>
+        </div>
 
-      <div id="status" class="mt-3 text-xs text-zinc-300"></div>
-    </div>
+        <div class="mt-4">
+          <label class="text-xs text-zinc-400">Choisis ton bonus</label>
+          <select id="pack" class="mt-2 w-full rounded-2xl bg-zinc-950/70 border border-zinc-800 px-4 py-3 text-sm">
+            <option value="solo">Solo — 1 photo (5€)</option>
+            <option value="duo">Duo — 2 photos (8€)</option>
+            <option value="famille">Famille — 4 photos (12€)</option>
+            <option value="tribu">Tribu — 6 photos (15€)</option>
+          </select>
+        </div>
 
-    <!-- Preview -->
-    <div class="mt-5 rounded-3xl border border-zinc-800 bg-zinc-900/40 p-5">
-      <div class="flex items-center justify-between">
-        <div class="text-sm font-semibold">Aperçu</div>
-        <span class="text-xs text-zinc-400">protégé</span>
-      </div>
+        <div class="mt-4 rounded-3xl bg-zinc-950/55 border border-zinc-800 p-4">
+          <div class="text-xs text-zinc-400">Caméra ou galerie</div>
+          <input id="photo" type="file" accept="image/*" capture="environment"
+            class="mt-2 block w-full text-sm
+                   file:mr-4 file:rounded-xl file:border-0
+                   file:bg-blue-500 file:px-4 file:py-3 file:font-bold file:text-white
+                   hover:file:bg-blue-400" />
+          <div id="fileInfo" class="mt-2 text-[11px] text-zinc-500"></div>
+        </div>
 
-      <img id="preview" alt="aperçu"
-           class="mt-4 w-full rounded-3xl border border-zinc-800 hidden" />
+        <button id="btnGenerate"
+          class="mt-4 w-full rounded-2xl py-4 font-extrabold bg-gradient-to-r from-blue-500 via-yellow-300 to-red-500 text-zinc-950 hover:brightness-110 active:scale-[0.99] transition glow">
+          🔥 VOIR MON APERÇU
+        </button>
 
-      <button id="unlock"
-        class="mt-4 w-full rounded-2xl bg-zinc-800 text-zinc-200 font-semibold py-4 hover:bg-zinc-700 hidden">
-        Débloquer HD (bientôt)
-      </button>
+        <div id="status" class="mt-3 text-[12px] text-zinc-300"></div>
+      </section>
 
-      <div class="mt-3 text-[11px] text-zinc-500 leading-snug">
-        * Sur la version finale : paiement → image HD sans watermark, et option tirage papier.
-      </div>
-    </div>
+      <!-- SCREEN 2: LOADING -->
+      <section id="screenLoading" class="hidden rounded-3xl border border-zinc-800 bg-zinc-900/35 p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-zinc-400 font-semibold">LEVEL 2</div>
+            <div class="text-xl font-extrabold">Génération… ⚙️</div>
+          </div>
+          <div class="text-xs text-zinc-400">Ne quitte pas</div>
+        </div>
 
-    <!-- Footer -->
-    <div class="mt-8 text-center text-xs text-zinc-500">
-      Démo technique — pour validation concept & expérience spectateur.
+        <div class="mt-4 rounded-3xl bg-zinc-950/55 border border-zinc-800 p-4 relative overflow-hidden">
+          <div class="text-sm text-zinc-200 font-semibold">Scan du stade</div>
+          <div class="text-xs text-zinc-500 mt-1">Préparation de ton aperçu protégé</div>
+
+          <div class="mt-4 h-3 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div id="loadingBar" class="h-full w-0 bg-yellow-300 transition-all duration-200"></div>
+          </div>
+
+          <div class="mt-3 text-[11px] text-zinc-500">
+            Astuce anti-screenshot : watermark + basse résolution tant que non acheté.
+          </div>
+
+          <!-- scan line -->
+          <div class="absolute left-0 right-0 top-0 h-16 bg-gradient-to-b from-yellow-300/20 via-yellow-300/10 to-transparent scanline"></div>
+        </div>
+
+        <button id="btnCancelLoading"
+          class="mt-4 w-full rounded-2xl py-4 font-extrabold bg-zinc-800 text-zinc-200 hover:bg-zinc-700 active:scale-[0.99] transition">
+          ⏸ Revenir à la capture
+        </button>
+      </section>
+
+      <!-- SCREEN 3: PREVIEW -->
+      <section id="screenPreview" class="hidden rounded-3xl border border-zinc-800 bg-zinc-900/35 p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-zinc-400 font-semibold">LEVEL 3</div>
+            <div class="text-xl font-extrabold">Aperçu prêt ✅</div>
+          </div>
+          <button id="btnBack3" class="text-xs px-3 py-2 rounded-xl bg-zinc-950/60 border border-zinc-800 text-zinc-200">
+            ↺ Rejouer
+          </button>
+        </div>
+
+        <div class="mt-4 relative">
+          <img id="preview" alt="aperçu"
+            class="w-full rounded-3xl border border-zinc-800 bg-black" />
+
+          <!-- “LOCKED” ribbon -->
+          <div class="absolute top-3 left-3 text-[11px] font-extrabold px-3 py-1 rounded-full bg-red-500 text-white shadow">
+            LOCKED PREVIEW
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <button id="btnUnlock"
+            class="rounded-2xl py-4 font-extrabold bg-yellow-300 text-zinc-950 hover:bg-yellow-200 active:scale-[0.99] transition glow">
+            🏆 DÉBLOQUER HD
+          </button>
+          <button id="btnFamily"
+            class="rounded-2xl py-4 font-extrabold bg-blue-500 text-white hover:bg-blue-400 active:scale-[0.99] transition">
+            👨‍👩‍👧 PACK FAMILLE
+          </button>
+        </div>
+
+        <div class="mt-3 text-[11px] text-zinc-500 leading-snug">
+          Version finale : paiement → HD sans watermark + option tirage papier.
+        </div>
+      </section>
+
     </div>
   </div>
 
   <script>
+    const screens = {
+      start: document.getElementById("screenStart"),
+      capture: document.getElementById("screenCapture"),
+      loading: document.getElementById("screenLoading"),
+      preview: document.getElementById("screenPreview"),
+    };
+
+    const stepLabel = document.getElementById("stepLabel");
+    const hintLabel = document.getElementById("hintLabel");
+    const bar = document.getElementById("bar");
+
+    const btnStart = document.getElementById("btnStart");
+    const btnBack1 = document.getElementById("btnBack1");
+    const btnGenerate = document.getElementById("btnGenerate");
+    const btnCancelLoading = document.getElementById("btnCancelLoading");
+    const btnBack3 = document.getElementById("btnBack3");
+
+    const btnUnlock = document.getElementById("btnUnlock");
+    const btnFamily = document.getElementById("btnFamily");
+
     const pack = document.getElementById("pack");
     const input = document.getElementById("photo");
-    const sendBtn = document.getElementById("sendBtn");
+    const fileInfo = document.getElementById("fileInfo");
     const status = document.getElementById("status");
-    const preview = document.getElementById("preview");
-    const unlock = document.getElementById("unlock");
 
-    sendBtn.onclick = async () => {
+    const preview = document.getElementById("preview");
+    const loadingBar = document.getElementById("loadingBar");
+
+    let loadingTimer = null;
+    let loadingPct = 0;
+
+    function show(screenName) {
+      Object.values(screens).forEach(el => el.classList.add("hidden"));
+      screens[screenName].classList.remove("hidden");
+
+      if (screenName === "start") {
+        stepLabel.textContent = "LEVEL 0";
+        hintLabel.textContent = "Prêt à jouer";
+        bar.style.width = "5%";
+      } else if (screenName === "capture") {
+        stepLabel.textContent = "LEVEL 1";
+        hintLabel.textContent = "Capture";
+        bar.style.width = "35%";
+      } else if (screenName === "loading") {
+        stepLabel.textContent = "LEVEL 2";
+        hintLabel.textContent = "Génération";
+        bar.style.width = "65%";
+      } else if (screenName === "preview") {
+        stepLabel.textContent = "LEVEL 3";
+        hintLabel.textContent = "Aperçu prêt";
+        bar.style.width = "100%";
+      }
+    }
+
+    function startFakeLoading() {
+      stopFakeLoading();
+      loadingPct = 0;
+      loadingBar.style.width = "0%";
+      loadingTimer = setInterval(() => {
+        loadingPct = Math.min(92, loadingPct + Math.random() * 12);
+        loadingBar.style.width = Math.floor(loadingPct) + "%";
+      }, 180);
+    }
+
+    function stopFakeLoading() {
+      if (loadingTimer) clearInterval(loadingTimer);
+      loadingTimer = null;
+    }
+
+    input.addEventListener("change", () => {
+      const f = input.files?.[0];
+      if (!f) { fileInfo.textContent = ""; return; }
+      fileInfo.textContent = `Fichier: ${f.name} • ${Math.round(f.size/1024/1024)} MB`;
+    });
+
+    btnStart.onclick = () => { show("capture"); };
+
+    btnBack1.onclick = () => {
+      status.textContent = "";
+      show("start");
+    };
+
+    btnCancelLoading.onclick = () => {
+      stopFakeLoading();
+      status.textContent = "";
+      show("capture");
+    };
+
+    btnBack3.onclick = () => {
+      status.textContent = "";
+      preview.src = "";
+      show("capture");
+    };
+
+    btnUnlock.onclick = () => {
+      alert("Paiement (Stripe) arrive bientôt 🙂 On le branche après.");
+    };
+
+    btnFamily.onclick = () => {
+      alert("Pack Famille sélectionné 👨‍👩‍👧 (paiement à brancher).");
+      pack.value = "famille";
+    };
+
+    btnGenerate.onclick = async () => {
       const file = input.files?.[0];
       if (!file) { alert("Choisis une photo."); return; }
 
       status.textContent = `Upload… (${Math.round(file.size/1024/1024)} MB)`;
-      preview.classList.add("hidden");
-      unlock.classList.add("hidden");
+      show("loading");
+      startFakeLoading();
 
       try {
         const fd = new FormData();
@@ -129,25 +334,31 @@
         const res = await fetch("/api/upload", { method: "POST", body: fd });
         const data = await res.json().catch(() => ({}));
 
+        stopFakeLoading();
+
         if (!res.ok) {
           status.textContent = "Erreur : " + (data?.error || `HTTP ${res.status}`);
+          show("capture");
           return;
         }
 
+        loadingBar.style.width = "100%";
         status.textContent = "Aperçu généré ✅";
-        // IMPORTANT : ?t= pour éviter le cache Safari
-        preview.src = data.previewUrl + "?t=" + Date.now();
-        preview.classList.remove("hidden");
-        unlock.classList.remove("hidden");
 
-        unlock.onclick = () => {
-          alert("Paiement + HD arrive bientôt 🙂 (on le branche après)");
-        };
+        // IMPORTANT: ?t= pour éviter le cache Safari
+        preview.src = data.previewUrl + "?t=" + Date.now();
+        show("preview");
       } catch (e) {
+        stopFakeLoading();
         status.textContent = "Erreur : " + (e?.message || "inconnue");
+        show("capture");
       }
     };
+
+    // init
+    show("start");
   </script>
 </body>
 </html>
+
 

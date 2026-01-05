@@ -6,16 +6,23 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } }); // 8MB
 
-// Sert la page web
-app.use(express.static(path.join(__dirname, "public")));
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB (iPhone OK)
+});
+
 
 // Sert les images générées
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-function ensureUploadsDir() {
-  const dir = path.join(__dirname, "uploads");
+app.use((err, req, res, next) => {
+  if (err && err.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ error: "Photo trop lourde. Essaie une photo plus légère." });
+  }
+  return next(err);
+});
+
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 }
 
@@ -104,4 +111,16 @@ app.post("/api/upload", upload.single("photo"), async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ MVP lancé : http://localhost:${PORT}`));
+
+node server.js
+
+git add server.js
+git commit -m "Fix upload mobile 25MB + error handling"
+git push
+
+grep -n "previewUrl" server.js
+pwd
+
+
+
 

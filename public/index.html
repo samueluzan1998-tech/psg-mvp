@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Photo IA - MVP</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 16px; max-width: 520px; margin: 0 auto; }
+    .card { border: 1px solid #ddd; border-radius: 16px; padding: 16px; }
+    button { width: 100%; padding: 14px; border-radius: 12px; border: 0; font-size: 16px; }
+    img { width: 100%; border-radius: 16px; margin-top: 12px; border: 1px solid #eee; }
+    .muted { color: #666; font-size: 14px; }
+    select, input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Photo IA (Prototype)</h1>
+
+  <div class="card">
+    <div class="muted">1) Choisis une photo (caméra ou galerie)  2) On te renvoie un aperçu protégé</div>
+
+    <label class="muted">Pack (pour simuler plus tard)</label>
+    <select id="pack">
+      <option value="solo">Solo (1 photo)</option>
+      <option value="duo">Duo (2 photos)</option>
+      <option value="famille">Famille (4 photos)</option>
+      <option value="tribu">Tribu (6 photos)</option>
+    </select>
+
+    <input id="photo" type="file" accept="image/*" capture="environment" />
+
+    <button id="send" style="margin-top:12px;">Générer l’aperçu</button>
+
+    <div id="status" class="muted" style="margin-top:10px;"></div>
+    <img id="preview" style="display:none;" />
+    <button id="unlock" style="display:none; margin-top:12px;">Débloquer HD (bientôt)</button>
+  </div>
+
+<script>
+  const sendBtn = document.getElementById("send");
+  const input = document.getElementById("photo");
+  const status = document.getElementById("status");
+  const preview = document.getElementById("preview");
+  const unlock = document.getElementById("unlock");
+  const pack = document.getElementById("pack");
+
+  sendBtn.onclick = async () => {
+    const file = input.files?.[0];
+    if (!file) { alert("Choisis une photo."); return; }
+
+    status.textContent = "Upload en cours…";
+    preview.style.display = "none";
+    unlock.style.display = "none";
+
+    const fd = new FormData();
+    fd.append("photo", file);
+    fd.append("pack", pack.value);
+
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.textContent = "Erreur : " + (data.error || "upload");
+      return;
+    }
+
+    status.textContent = "Aperçu généré ✅";
+    preview.src = data.previewUrl + "&t=" + Date.now();
+    preview.style.display = "block";
+    unlock.style.display = "block";
+  };
+</script>
+</body>
+</html>

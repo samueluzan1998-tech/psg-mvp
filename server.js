@@ -102,6 +102,6 @@ app.post("/api/upload", upload.single("photo"), async (req, res) => {
   }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ MVP lancé : http://localhost:${PORT}`));
 
